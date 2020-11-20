@@ -14,7 +14,7 @@ if __name__ == '__main__':
    Create a client object by callig the WindwardClient() constructor
    Pass in the url to your RESTful engine to the constructor as shown bellow
    '''
-   testClient = client.WindwardClient("http://localhost:64228/")
+   testClient = client.WindwardClient("http://ec2-54-88-67-209.compute-1.amazonaws.com/")
 
    'To check the version of the restful engine, use the client.getVersion() method'
    testVersion = testClient.getVersion()
