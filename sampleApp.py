@@ -2,13 +2,9 @@
 from windwardrestapi.Model import ParameterValue, Template, Parameter, Xml_10DataSource
 from windwardrestapi.Api import WindwardClient as client
 import os
-# from windwardrestapi.Model.ParameterValue import ParameterValue
-# from windwardrestapi.Model.Template import Template
-# from windwardrestapi.Model.Parameter import Parameter
-# from windwardrestapi.Model.Xml_10DataSource import Xml_10DataSource
-
 import time
-
+import base64
+import zipfile
 if __name__ == '__main__':
    '''
    Create a client object by callig the WindwardClient() constructor
@@ -57,6 +53,12 @@ if __name__ == '__main__':
    'Now we get the document'
    testGetDocument = testClient.getDocument(testDocument.guid)
    print("testGetDocument Guid: ", testGetDocument.guid)
+
+   with open("files/output.docx", "wb") as fh:
+      fh.write(base64.standard_b64decode(testGetDocument.data))
+      assert(zipfile.is_zipfile("files/output.docx"))
+      zip = zipfile.ZipFile("files/output.docx")
+      assert(zip.read("word/document.xml") is not None)
 
    ############################
           # METRICS #
