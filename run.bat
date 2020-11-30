@@ -1,1 +1,1 @@
-pip install windwardrestapi==20.2.0.5 & python sampleApp.py
+pip install windwardrestapi==20.2.0.501 & python sampleApp.py
