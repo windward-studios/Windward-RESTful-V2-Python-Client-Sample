@@ -1,5 +1,5 @@
 
-from windwardrestapi.Model import ParameterValue, Template, Parameter, Xml_10DataSource
+from windwardrestapi.Model import ParameterValue, Template, Parameter, Xml_10DataSource, SqlDataSource
 from windwardrestapi.Api import WindwardClient as client
 import os
 import time
@@ -10,7 +10,7 @@ if __name__ == '__main__':
    Create a client object by callig the WindwardClient() constructor
    Pass in the url to your RESTful engine to the constructor as shown bellow
    '''
-   testClient = client.WindwardClient("http://ec2-54-88-67-209.compute-1.amazonaws.com/")
+   testClient = client.WindwardClient("http://localhost:61742/")
 
    'To check the version of the restful engine, use the client.getVersion() method'
    testVersion = testClient.getVersion()
@@ -27,12 +27,13 @@ if __name__ == '__main__':
 
    'Create a test xml Datasource object'
    testXmlDS = Xml_10DataSource.Xml_10DataSource(name="MANF_DATA_2009", data=data)
+   # testSqlDS = SqlDataSource.SqlDataSource(name="SqlServer", className="System.Data.SqlClient", connectionString="Data Source=mssql.windward.net;Initial Catalog=Northwind;User ID=demo;Password=demo")
 
    'Set the input parameter for the template as a parameter object and pass in to template constructor'
-   testParam = Parameter.Parameter(name="varName1", wrappedValue=ParameterValue.ParameterValue(paramType="string", rawValue="zaid"))
+   # testParam = Parameter.Parameter(name="varName1", wrappedValue=ParameterValue.ParameterValue(paramType="string", rawValue="zaid"))
 
    'Create the testTemplate object using the Template.Template() constructor'
-   testTemplate = Template.Template(data=file, outputFormat=Template.outputFormatEnum.DOCX, datasources=testXmlDS, parameters=testParam)
+   testTemplate = Template.Template(data=file, outputFormat=Template.outputFormatEnum.DOCX, datasources=testXmlDS)
 
    ############################
          # DOCUMENT #
@@ -53,16 +54,27 @@ if __name__ == '__main__':
    'Now we get the document'
    testGetDocument = testClient.getDocument(testDocument.guid)
    print("testGetDocument Guid: ", testGetDocument.guid)
+   testGetDocumentMeta = testClient.getDocumentMeta(testGetDocument.guid)
+   print("testGetDocumentMeta: ", testGetDocumentMeta.toDict())
+   # USE THIS CODE TO WRITE THE ENCODED DATA TO FILE (file will be called output)
+   # filePath = "files/output."+testTemplate.outputFormat
+   # with open(, "wb") as fh:
+   #    fh.write(filePath, base64.standard_b64decode(testGetDocument.data))
+   #    assert(zipfile.is_zipfile(filePath))
+   #    zip = zipfile.ZipFile(filePath)
+   #    assert(zip.read("word/document.xml") is not None)
 
-   with open("files/output.docx", "wb") as fh:
-      fh.write(base64.standard_b64decode(testGetDocument.data))
-      assert(zipfile.is_zipfile("files/output.docx"))
-      zip = zipfile.ZipFile("files/output.docx")
-      assert(zip.read("word/document.xml") is not None)
+
+   #  USE THIS CODE TO WRITE FILESTREAM TO FILE. (file will have guid as file name)
+   # testGetDocumentMeta = testClient.getDocumentMeta(testGetDocument.guid)
+   # testFileStream = testClient.getDocumentFile(testGetDocument.guid)
+   # filePath = "files/"+testGetDocument.guid+"."+ testTemplate.outputFormat
+   # with open(filePath, "wb") as file:
+   #    file.write(testFileStream)
 
    ############################
           # METRICS #
-   ############################
+   ###########################
    'Get the metrics of the template posted by using the postMetrics method'
    testMetricsPost = testClient.postMetrics(testTemplate)
    print("testMetricsPost Guid: ", testMetricsPost.guid)
