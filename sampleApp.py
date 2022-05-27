@@ -93,25 +93,3 @@ if __name__ == '__main__':
    'To delete the metrics use the deleteMetrics(Guid) method'
    testMetricsDelete = testClient.deleteMetrics(testGetMetrics.guid)
    print("Metrics delete status: ", testMetricsDelete)
-
-   ############################
-           # TAGTREE #
-   ############################
-   'Post the tagTree for processing by calling the postTagTree(Template) method'
-   testPostTagTree = testClient.postTagTree(testTemplate)
-   'Wait for processing to complete'
-   while True:
-      testTagTreeStatus = testClient.getTagTreeStatus(testPostTagTree.guid)
-      if testTagTreeStatus != 200:
-         print("Not ready: ", testTagTreeStatus)
-         time.sleep(1)
-      else:
-         print("Ready: ", testTagTreeStatus)
-         break
-   'Once successful, get the tagTree'
-   testGetTagTree = testClient.getTagTree(testPostTagTree.guid)
-   print("TAGTREE\n", testGetTagTree.toDict())
-
-   'Delet the tagTree'
-   testTagTreeDelete = testClient.deleteTagTree(testPostTagTree.guid)
-   print("TagTree delete status: ", testTagTreeDelete)
